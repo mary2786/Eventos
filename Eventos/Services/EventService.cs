@@ -21,28 +21,39 @@ namespace Eventos.Services
             foreach (KeyValuePair<string, string> keyValue in events)
             {
                 DateTime dateEvent = DateTime.Parse(keyValue.Value, new CultureInfo("es-MX"));
-                TimeSpan time = DateTime.Now - dateEvent;
+                TimeSpan timeDiff = DateTime.Now - dateEvent;
                 string text = "ocurrió hace ";
-                if(DateTime.Compare(DateTime.Now, dateEvent)<=0)
+                if (DateTime.Compare(DateTime.Now, dateEvent) <= 0)
                 {
                     text = "ocurrirá dentro de ";
+                    timeDiff *= -1;
                 }
 
-                /*var d = dateEvent.Days;
-                var h = dateEvent.Hours;
-                var m = dateEvent.Minutes;*/
+                int months = timeDiff.Days/30;
+                int days = timeDiff.Hours/24;
+                int hours = timeDiff.Minutes/60;
+                if (months > 0)
+                {     
+                    text += months.ToString() + " mes" + ((months > 1)? "es": "");
+                }
+                else if (days > 0)
+                {
+                    text += days.ToString() + " día" + ((days > 1) ? "s" : "");
+                }
+                else if (hours > 0)
+                {
+                    text += hours.ToString() + " hora" + ((hours > 1) ? "s" : "");
+                }
+                else
+                {
+                    int minutes = timeDiff.Minutes;
+                    text += minutes.ToString() +  " minuto" + ((minutes > 1) ? "s" : "");
+                }
 
                 eventsMod.Add(keyValue.Key, text);
             }
 
             return eventsMod;
         }
-
-        /*
-        public void getDate(DateTime dateEvent)
-        {
-            TimeSpan time = DateTime.Now - dateEvent;
-
-        }*/
     }
 }

@@ -10,7 +10,7 @@ namespace Eventos.Persistencia
 
         public Dictionary<string, string> GetEvents()
         {
-            string path = "C:\\Users\\elena.pech\\Documents\\Cursos BOT 2020\\Eventos\\Eventos\\Persistencia\\eventos.txt";
+            string path = @"c:\Temp\eventos.txt";
             string[] lines = File.ReadAllLines(path);
             Dictionary<string, string> events = new Dictionary<string, string>();
 
