@@ -4,6 +4,6 @@ namespace Eventos.Persistencia
 {
     public interface IEventRepository
     {
-        Dictionary<string, string> GetEvents();
+        string[] GetEvents();
     }
 }

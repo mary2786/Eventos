@@ -25,3 +25,4 @@ C:\Users\elena.pech\Documents\GitHub\Events\Eventos\obj\Debug\netcoreapp3.1\Even
 C:\Users\elena.pech\Documents\GitHub\Events\Eventos\obj\Debug\netcoreapp3.1\Eventos.csproj.CopyComplete
 C:\Users\elena.pech\Documents\GitHub\Events\Eventos\obj\Debug\netcoreapp3.1\Eventos.dll
 C:\Users\elena.pech\Documents\GitHub\Events\Eventos\obj\Debug\netcoreapp3.1\Eventos.pdb
+C:\Users\elena.pech\Documents\GitHub\Events\Eventos\obj\Debug\netcoreapp3.1\Eventos.csprojAssemblyReference.cache

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Globalization;
 
 namespace Eventos.Services
 {
     public interface IEventService
     {
-        Dictionary<string, string> GetEvents();
+        string[] GetEvents();
+        string GetTextEvent(string @event, CultureInfo cultureInfo);
     }
 }

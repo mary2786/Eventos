@@ -2,8 +2,7 @@
 using Eventos.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 
 namespace Eventos
 {
@@ -13,14 +12,17 @@ namespace Eventos
         {
             var serviceProvider = new ServiceCollection()
            .AddSingleton<IEventRepository, EventRepository>()
+           .AddScoped<ICurrentDateService, CurrentDateService>()
+           .AddScoped<IDateEventUtil, DateEventUtil>()       
            .AddScoped<IEventService, EventService>()
            .BuildServiceProvider();
 
             IEventService eventService = serviceProvider.GetService<IEventService>();
 
-            foreach (KeyValuePair<string, string> keyValue in eventService.GetEvents())
+            foreach (string @event in eventService.GetEvents())
             {
-                Console.WriteLine("\t" + keyValue.Key + " " + keyValue.Value);
+                string eventText =eventService.GetTextEvent(@event, new CultureInfo("es-MX"));
+                Console.WriteLine("\t" + eventText);
             }
         }
     }
