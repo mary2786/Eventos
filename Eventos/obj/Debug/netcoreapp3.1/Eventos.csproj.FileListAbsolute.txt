@@ -1,0 +1,14 @@
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.exe
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.deps.json
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.runtimeconfig.json
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.runtimeconfig.dev.json
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.dll
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Eventos.pdb
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.csprojAssemblyReference.cache
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.AssemblyInfoInputs.cache
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.AssemblyInfo.cs
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.dll
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.pdb
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\elena.pech\Documents\Cursos BOT 2020\Eventos\Eventos\obj\Debug\netcoreapp3.1\Eventos.csproj.CopyComplete

@@ -1,0 +1,4 @@
+﻿Inicio del Curso Patrones de Diseño, 26/12/2019 8:30 
+Año nuevo, 01/01/2020 
+Día de la madre, 10/05/2019 
+Otro, 10/05/2020
