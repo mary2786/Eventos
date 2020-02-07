@@ -8,7 +8,7 @@ namespace Eventos.Services
         {
             TimeSpan timeInterval = dateNow - dateEvent;
 
-            if (timeInterval.Milliseconds < 0)
+            if (timeInterval.TotalMilliseconds < 0)
             {
                 timeInterval *= -1;
             }

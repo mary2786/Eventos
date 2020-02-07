@@ -12,6 +12,8 @@ namespace Eventos
         {
             var serviceProvider = new ServiceCollection()
            .AddSingleton<IEventRepository, EventRepository>()
+           .AddSingleton<IFileWrapper, FileWrapper>()
+           .AddSingleton<IPrintEvent, PrintEvent>()
            .AddScoped<ICurrentDate, CurrentDate>()
            .AddScoped<IDateConverter, DateConverter>()
            .AddScoped<ITimeInterval, TimeInterval>()
@@ -20,19 +22,8 @@ namespace Eventos
            .BuildServiceProvider();
 
             IEventService eventService = serviceProvider.GetService<IEventService>();
-
-            try
-            {
-                foreach (string @event in eventService.GetEvents())
-                {
-                    string eventText = eventService.GetTextEvent(@event, new CultureInfo("es-MX"));
-                    Console.WriteLine("\t" + eventText);
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
+            string path = @"c:\Temp\eventos.txt";
+            eventService.PrintEvents(path);          
         }
     }
 }

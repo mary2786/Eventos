@@ -2,6 +2,6 @@
 {
     public interface IEventRepository
     {
-        string[] GetEvents();
+        string[] GetEvents(string path);
     }
 }

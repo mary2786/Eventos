@@ -4,11 +4,20 @@ namespace Eventos.Persistencia
 {
     public class EventRepository : IEventRepository
     {
-        public string[] GetEvents()
+        private IFileWrapper _fileWrapper;
+        public EventRepository(IFileWrapper fileWrapper)
         {
-            string path = @"c:\Temp\eventos.txt";
-            string[] lines = File.ReadAllLines(path);
-            return lines;
+            _fileWrapper = fileWrapper;
+        }
+
+        public string[] GetEvents(string path)
+        {
+            if (!_fileWrapper.Exists(path))
+            {
+                throw new DirectoryNotFoundException("No se encontró el archivo");
+            }
+
+            return _fileWrapper.ReadFile(path);
         }
     }
 }

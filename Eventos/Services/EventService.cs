@@ -10,23 +10,40 @@ namespace Eventos.Services
         private IDateConverter _dateConverter;
         private IDateEventUtil _dateEventUtil;
         private ICurrentDate _currentDate;
-        public EventService(IEventRepository eventRepository, IDateEventUtil dateEventUtil, ICurrentDate currentDate, IDateConverter dateConverter)
+        private IPrintEvent _printEvent;
+
+        public EventService(IEventRepository eventRepository, 
+            IDateEventUtil dateEventUtil, 
+            ICurrentDate currentDate, 
+            IDateConverter dateConverter, IPrintEvent printEvent)
         {
             _eventRepository = eventRepository;
             _dateConverter = dateConverter;
             _dateEventUtil = dateEventUtil;
             _currentDate = currentDate;
+            _printEvent = printEvent;
         }
 
-        public string[] GetEvents()
+        public void PrintEvents(string path)
         {
-            return _eventRepository.GetEvents();
+            try
+            {
+                foreach (string @event in _eventRepository.GetEvents(path))
+                {
+                    string textEvent = GetTextEvent(@event);
+                    _printEvent.PrintTextEvent(textEvent);
+                }
+            }
+            catch (Exception excepcion)
+            {
+                throw new Exception("No se pudo imprimir la lista de eventos (" + excepcion + ")");
+            }
         }
 
-        public string GetTextEvent(string @event, CultureInfo cultureInfo)
+        public string GetTextEvent(string @event)
         {
             string[] eventInformation = @event.Split(",".ToCharArray());
-            DateTime dateEvent = _dateConverter.ConverterTextToDate(eventInformation[1], cultureInfo);
+            DateTime dateEvent = _dateConverter.ConverterTextToDate(eventInformation[1]);
             return _dateEventUtil.GetMessageEvent(eventInformation[0], _currentDate.GetCurrentDate(), dateEvent);
         }
     }

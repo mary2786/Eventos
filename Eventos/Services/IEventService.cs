@@ -4,7 +4,7 @@ namespace Eventos.Services
 {
     public interface IEventService
     {
-        string[] GetEvents();
-        string GetTextEvent(string @event, CultureInfo cultureInfo);
+        void PrintEvents(string path);
+        string GetTextEvent(string @event);
     }
 }
