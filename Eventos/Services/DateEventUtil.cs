@@ -1,57 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace Eventos.Services
 {
     public class DateEventUtil : IDateEventUtil
     {
-        public string ConvertTimeToText(DataEvent dataEvent)
+        private ITimeInterval _timeInterval;
+        public DateEventUtil(ITimeInterval timeInterval)
         {
-            int months = dataEvent.Time.Days / 30;
-            int days = dataEvent.Time.Hours / 24;
-            int hours = dataEvent.Time.Minutes / 60;
-            string text = dataEvent.TextEvent;
+            _timeInterval = timeInterval;
+        }
+
+        public string ConvertTimeToText(TimeSpan timeInterval)
+        {
+            int months = (int)timeInterval.TotalDays / 30;
+            int days = (int)timeInterval.TotalHours / 24;
+            int hours = (int)timeInterval.TotalMinutes / 60;
+            string text;
 
             if (months > 0)
             {
-                text += months.ToString() + " mes" + ((months > 1) ? "es" : "");
+                text = months.ToString() + " mes" + ((months > 1) ? "es" : "");
             }
             else if (days > 0)
             {
-                text += days.ToString() + " día" + ((days > 1) ? "s" : "");
+                text = days.ToString() + " día" + ((days > 1) ? "s" : "");
             }
             else if (hours > 0)
             {
-                text += hours.ToString() + " hora" + ((hours > 1) ? "s" : "");
+                text = hours.ToString() + " hora" + ((hours > 1) ? "s" : "");
             }
             else
             {
-                int minutes = dataEvent.Time.Minutes;
-                text += minutes.ToString() + " minuto" + ((minutes > 1) ? "s" : "");
+                int minutes = timeInterval.Minutes;
+                text = minutes.ToString() + " minuto" + ((minutes > 1) ? "s" : "");
             }
 
             return text;
         }
 
-        public DataEvent GetDataEvent(DateTime dateNow, string[] eventInformation, CultureInfo cultureInfo)
+        public string GetMessageEvent(string nameEvent, DateTime dateNow, DateTime dateEvent)
         {
-            DataEvent dataEvent = new DataEvent();
-            DateTime dateEvent = DateTime.Parse(eventInformation[1], cultureInfo);
-            TimeSpan timeDiff = dateNow - dateEvent;
-            dataEvent.TextEvent = eventInformation[0];
+            TimeSpan timeInterval = _timeInterval.GetTimeInterval(dateNow, dateEvent);
+            string timeText = ConvertTimeToText(timeInterval);
+            string message;
             if (DateTime.Compare(dateNow, dateEvent) <= 0)
             {
-                dataEvent.TextEvent += " ocurrirá dentro de ";
-                dataEvent.Time = timeDiff * -1;
+                message = "ocurrirá dentro de";
             }
             else
             {
-                dataEvent.TextEvent += " ocurrió hace ";
-                dataEvent.Time = timeDiff;
+                message = "ocurrió hace";
             }
 
-            return dataEvent;
+            return string.Format("{0} {1} {2}", nameEvent, message,  timeText);
         }
+
+        
     }
 }

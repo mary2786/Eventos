@@ -1,21 +1,21 @@
 ﻿using Eventos.Persistencia;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace Eventos.Services
 {
     public class EventService : IEventService
     {
         private IEventRepository _eventRepository;
+        private IDateConverter _dateConverter;
         private IDateEventUtil _dateEventUtil;
-        private ICurrentDateService _currentDateService;
-        public EventService(IEventRepository eventRepository, IDateEventUtil dateEventUtil, ICurrentDateService currentDateService)
+        private ICurrentDate _currentDate;
+        public EventService(IEventRepository eventRepository, IDateEventUtil dateEventUtil, ICurrentDate currentDate, IDateConverter dateConverter)
         {
             _eventRepository = eventRepository;
+            _dateConverter = dateConverter;
             _dateEventUtil = dateEventUtil;
-            _currentDateService = currentDateService;
+            _currentDate = currentDate;
         }
 
         public string[] GetEvents()
@@ -26,8 +26,8 @@ namespace Eventos.Services
         public string GetTextEvent(string @event, CultureInfo cultureInfo)
         {
             string[] eventInformation = @event.Split(",".ToCharArray());
-            DataEvent dataEvent = _dateEventUtil.GetDataEvent(_currentDateService.GetCurrentDate(), eventInformation, cultureInfo);
-            return _dateEventUtil.ConvertTimeToText(dataEvent);
+            DateTime dateEvent = _dateConverter.ConverterTextToDate(eventInformation[1], cultureInfo);
+            return _dateEventUtil.GetMessageEvent(eventInformation[0], _currentDate.GetCurrentDate(), dateEvent);
         }
     }
 }

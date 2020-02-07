@@ -12,17 +12,26 @@ namespace Eventos
         {
             var serviceProvider = new ServiceCollection()
            .AddSingleton<IEventRepository, EventRepository>()
-           .AddScoped<ICurrentDateService, CurrentDateService>()
-           .AddScoped<IDateEventUtil, DateEventUtil>()       
+           .AddScoped<ICurrentDate, CurrentDate>()
+           .AddScoped<IDateConverter, DateConverter>()
+           .AddScoped<ITimeInterval, TimeInterval>()
+           .AddScoped<IDateEventUtil, DateEventUtil>()
            .AddScoped<IEventService, EventService>()
            .BuildServiceProvider();
 
             IEventService eventService = serviceProvider.GetService<IEventService>();
 
-            foreach (string @event in eventService.GetEvents())
+            try
             {
-                string eventText =eventService.GetTextEvent(@event, new CultureInfo("es-MX"));
-                Console.WriteLine("\t" + eventText);
+                foreach (string @event in eventService.GetEvents())
+                {
+                    string eventText = eventService.GetTextEvent(@event, new CultureInfo("es-MX"));
+                    Console.WriteLine("\t" + eventText);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Eventos.Services
 {
-    public interface ICurrentDateService
+    public interface ICurrentDate
     {
         DateTime GetCurrentDate();
     }

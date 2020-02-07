@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Eventos.Persistencia
+﻿namespace Eventos.Persistencia
 {
     public interface IEventRepository
     {
