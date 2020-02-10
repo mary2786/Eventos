@@ -1,8 +1,6 @@
-﻿using Eventos.Persistencia;
+﻿using Eventos.Persistence;
 using Eventos.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Globalization;
 
 namespace Eventos
 {
@@ -14,6 +12,7 @@ namespace Eventos
            .AddSingleton<IEventRepository, EventRepository>()
            .AddSingleton<IFileWrapper, FileWrapper>()
            .AddSingleton<IPrintEvent, PrintEvent>()
+           .AddSingleton<IEventValidator, EventValidator>()
            .AddScoped<ICurrentDate, CurrentDate>()
            .AddScoped<IDateConverter, DateConverter>()
            .AddScoped<ITimeInterval, TimeInterval>()

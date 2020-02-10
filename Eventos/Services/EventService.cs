@@ -1,50 +1,46 @@
-﻿using Eventos.Persistencia;
+﻿using Eventos.Persistence;
 using System;
-using System.Globalization;
 
 namespace Eventos.Services
 {
     public class EventService : IEventService
     {
-        private IEventRepository _eventRepository;
-        private IDateConverter _dateConverter;
-        private IDateEventUtil _dateEventUtil;
-        private ICurrentDate _currentDate;
-        private IPrintEvent _printEvent;
+        private readonly IEventRepository _eventRepository;      
+        private readonly IDateEventUtil _dateEventUtil;
+        private readonly IPrintEvent _printEvent;
+        private readonly IEventValidator _eventValidator;
 
         public EventService(IEventRepository eventRepository, 
             IDateEventUtil dateEventUtil, 
-            ICurrentDate currentDate, 
-            IDateConverter dateConverter, IPrintEvent printEvent)
+            IPrintEvent printEvent,
+            IEventValidator eventValidator)
         {
             _eventRepository = eventRepository;
-            _dateConverter = dateConverter;
             _dateEventUtil = dateEventUtil;
-            _currentDate = currentDate;
             _printEvent = printEvent;
+            _eventValidator = eventValidator;
         }
 
         public void PrintEvents(string path)
         {
             try
             {
-                foreach (string @event in _eventRepository.GetEvents(path))
+                foreach (string textEvent in _eventRepository.GetEvents(path))
                 {
-                    string textEvent = GetTextEvent(@event);
-                    _printEvent.PrintTextEvent(textEvent);
+                    string message = GetMessageEvent(textEvent);
+                    _printEvent.PrintTextEvent(message);
                 }
             }
             catch (Exception excepcion)
             {
-                throw new Exception("No se pudo imprimir la lista de eventos (" + excepcion + ")");
+                throw excepcion;
             }
         }
 
-        public string GetTextEvent(string @event)
+        private string GetMessageEvent(string textEvent)
         {
-            string[] eventInformation = @event.Split(",".ToCharArray());
-            DateTime dateEvent = _dateConverter.ConverterTextToDate(eventInformation[1]);
-            return _dateEventUtil.GetMessageEvent(eventInformation[0], _currentDate.GetCurrentDate(), dateEvent);
+            Event @event = _eventValidator.ValidateEventFormat(textEvent);
+            return _dateEventUtil.GetMessageEvent(@event);
         }
     }
 }

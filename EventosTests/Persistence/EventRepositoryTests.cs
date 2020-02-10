@@ -1,13 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Eventos.Persistencia;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Moq;
 using System.IO;
 using System.Linq;
 
-namespace Eventos.Persistencia.Tests
+namespace Eventos.Persistence.Tests
 {
     [TestClass()]
     public class EventRepositoryTests

@@ -1,4 +1,4 @@
-﻿namespace Eventos.Persistencia
+﻿namespace Eventos.Persistence
 {
     public interface IEventRepository
     {

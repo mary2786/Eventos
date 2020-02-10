@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Eventos.Persistencia
+namespace Eventos.Persistence
 {
     public class EventRepository : IEventRepository
     {

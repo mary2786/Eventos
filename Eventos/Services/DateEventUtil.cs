@@ -4,10 +4,13 @@ namespace Eventos.Services
 {
     public class DateEventUtil : IDateEventUtil
     {
-        private ITimeInterval _timeInterval;
-        public DateEventUtil(ITimeInterval timeInterval)
+        private readonly ITimeInterval _timeInterval;
+        private readonly ICurrentDate _currentDate;
+
+        public DateEventUtil(ITimeInterval timeInterval, ICurrentDate currentDate)
         {
             _timeInterval = timeInterval;
+            _currentDate = currentDate;
         }
 
         public string ConvertTimeToText(TimeSpan timeInterval)
@@ -38,12 +41,13 @@ namespace Eventos.Services
             return text;
         }
 
-        public string GetMessageEvent(string nameEvent, DateTime dateNow, DateTime dateEvent)
+        public string GetMessageEvent(Event @event)
         {
-            TimeSpan timeInterval = _timeInterval.GetTimeInterval(dateNow, dateEvent);
+            DateTime dateNow = _currentDate.GetCurrentDate();
+            TimeSpan timeInterval = _timeInterval.GetTimeInterval(dateNow, @event.Date);
             string timeText = ConvertTimeToText(timeInterval);
             string message;
-            if (DateTime.Compare(dateNow, dateEvent) <= 0)
+            if (DateTime.Compare(dateNow, @event.Date) <= 0)
             {
                 message = "ocurrirá dentro de";
             }
@@ -52,7 +56,7 @@ namespace Eventos.Services
                 message = "ocurrió hace";
             }
 
-            return string.Format("{0} {1} {2}", nameEvent, message,  timeText);
+            return string.Format("{0} {1} {2}", @event.Name, message,  timeText);
         }
 
         

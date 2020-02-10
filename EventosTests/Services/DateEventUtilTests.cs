@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Eventos.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Moq;
+using System;
 
 namespace Eventos.Services.Tests
 {
@@ -11,13 +8,15 @@ namespace Eventos.Services.Tests
     public class DateEventUtilTests
     {
         private Mock<ITimeInterval> _timeInterval;
+        private Mock<ICurrentDate> _currentDate;
         private DateEventUtil _dateEventUtil;
 
         [TestInitialize]
         public void Setup()
         {
             _timeInterval = new Mock<ITimeInterval>();
-            _dateEventUtil = new DateEventUtil(_timeInterval.Object);
+            _currentDate = new Mock<ICurrentDate>();
+            _dateEventUtil = new DateEventUtil(_timeInterval.Object, _currentDate.Object);
         }
 
         [TestMethod()]
@@ -150,38 +149,40 @@ namespace Eventos.Services.Tests
         public void GetMessageEvent_DateEventIsGreaterThanDateNow_MessageIndicatesThatTheEventWillOccurSoon()
         {
             //Arrange
-            string nameEvent = "San Valentín";
-            string textExp = "San Valentín ocurrirá dentro de 7 días";
-            DateTime dateEvent = new DateTime(2020,2,14);
+            string messageEventExp = "San Valentín ocurrirá dentro de 7 días";
             DateTime dateNow = new DateTime(2020, 2, 7);
             TimeSpan timeInterval = new TimeSpan(7,0, 0, 0);
+            Event @event = new Event() { Name = "San Valentín", Date = new DateTime(2020, 2, 14) };
+            _currentDate.Setup(s => s.GetCurrentDate()).Returns(dateNow);
             _timeInterval.Setup(s => s.GetTimeInterval(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(timeInterval);
 
             //Act
-            string textAct = _dateEventUtil.GetMessageEvent(nameEvent, dateNow, dateEvent);
+            string messageEventAct = _dateEventUtil.GetMessageEvent(@event);
 
             //Assert
+            _currentDate.Verify(v => v.GetCurrentDate(), Times.Once);
             _timeInterval.Verify(v => v.GetTimeInterval(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
-            Assert.AreEqual(textExp, textAct);
+            Assert.AreEqual(messageEventExp, messageEventAct);
         }
 
         [TestMethod()]
         public void GetMessageEvent_DateEventIsLessThanDateNow_MessageIndicatesThatTheEventHasAlreadyOccurred()
         {
             //Arrange
-            string nameEvent = "El evento X";
-            string textExp = "El evento X ocurrió hace 6 días";
-            DateTime dateEvent = new DateTime(2020, 2, 1);
+            string messageEventExp = "Evento X ocurrió hace 6 días";
             DateTime dateNow = new DateTime(2020, 2, 7);
             TimeSpan timeInterval = new TimeSpan(6, 0, 0, 0);
+            _currentDate.Setup(s => s.GetCurrentDate()).Returns(dateNow);
             _timeInterval.Setup(s => s.GetTimeInterval(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(timeInterval);
+            Event @event = new Event() { Name = "Evento X", Date = new DateTime(2020, 2, 1) };
 
             //Act
-            string textAct = _dateEventUtil.GetMessageEvent(nameEvent, dateNow, dateEvent);
+            string messageEventAct = _dateEventUtil.GetMessageEvent(@event);
 
             //Assert
+            _currentDate.Verify(v => v.GetCurrentDate(), Times.Once);
             _timeInterval.Verify(v => v.GetTimeInterval(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
-            Assert.AreEqual(textExp, textAct);
+            Assert.AreEqual(messageEventExp, messageEventAct);
         }
     }
 }

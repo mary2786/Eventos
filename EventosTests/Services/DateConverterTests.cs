@@ -1,9 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Eventos.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
 
 namespace Eventos.Services.Tests
 {

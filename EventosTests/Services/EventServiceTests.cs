@@ -1,11 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Eventos.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Eventos.Persistence;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Eventos.Persistencia;
-using System.Globalization;
+using System;
 
 namespace Eventos.Services.Tests
 {
@@ -13,56 +9,63 @@ namespace Eventos.Services.Tests
     public class EventServiceTests
     {
         private Mock<IEventRepository> _eventRepository;
-        private Mock<IDateConverter> _dateConverter;
         private Mock<IDateEventUtil> _dateEventUtil;
-        private Mock<ICurrentDate> _currentDate;
         private Mock<IPrintEvent> _printEvent;
+        private Mock<IEventValidator> _eventValidator;
         private EventService _eventService;
+        private string[] _events;
+        private string _path;
 
         [TestInitialize]
         public void Setup()
         {
             _eventRepository = new Mock<IEventRepository>();
-            _dateConverter = new Mock<IDateConverter>();
             _dateEventUtil = new Mock<IDateEventUtil>();
-            _currentDate = new Mock<ICurrentDate>();
             _printEvent = new Mock<IPrintEvent>();
-            _eventService = new EventService(_eventRepository.Object, _dateEventUtil.Object, _currentDate.Object, _dateConverter.Object, _printEvent.Object);
+            _eventValidator = new Mock<IEventValidator>();
+            _eventService = new EventService(_eventRepository.Object, _dateEventUtil.Object, _printEvent.Object, _eventValidator.Object);
+            _events = new string[] { "Día de las madres, 10/05/2019 10:50:20", "Navidad, 25/12/2020 12:01:00" };
+            _path = @"c:\Temp\eventos.txt";
+
+            _eventRepository.Setup(s => s.GetEvents(It.IsAny<string>())).Returns(_events);
         }
 
         [TestMethod()]
-        public void PrintEvents_EventArray()
+        public void PrintEvents_CorrectEventData_PrintMessageEvent()
         {
-            //Arrange
-            string path = @"c:\Temp\eventos.txt";
-            string[] eventsExp = { "Día de las madres, 10/05/2019 10:50:20", "Navidad, 25/12/2020 12:01:00", "Festival de la escuela, 02/09/2020 10:50:20"};
-            _eventRepository.Setup(s => s.GetEvents(It.IsAny<string>())).Returns(eventsExp);
+            //Arrange    
+            Event @event1 = new Event() { Name = "Día de las madres", Date = new DateTime(2019, 5, 10, 10, 50, 20) };
+            Event @event2 = new Event() { Name = "Navidad", Date = new DateTime(2020, 12, 25, 12, 1, 0) };
+            string messageEventExp1 = "Día de las madres ocurrió hace 9 meses";
+            string messageEventExp2 = "Navidad ocurrirá dentro de 10 meses";
+            
+            _eventValidator.SetupSequence(s => s.ValidateEventFormat(It.IsAny<string>())).Returns(@event1).Returns(event2);
+            _dateEventUtil.SetupSequence(s => s.GetMessageEvent(It.IsAny<Event>())).Returns(messageEventExp1).Returns(messageEventExp2);
             _printEvent.Setup(s => s.PrintTextEvent(It.IsAny<string>()));
 
             //Act
-            _eventService.PrintEvents(path);
+            _eventService.PrintEvents(_path);
 
             //Assert
             _eventRepository.Verify(v => v.GetEvents(It.IsAny<string>()), Times.Once);
-            _printEvent.Verify(v => v.PrintTextEvent(It.IsAny<string>()), Times.Exactly(3));
+            _eventValidator.Verify(v => v.ValidateEventFormat(It.IsAny<string>()), Times.Exactly(2));
+            _dateEventUtil.Verify(v => v.GetMessageEvent(It.IsAny<Event>()), Times.Exactly(2));
+            _printEvent.Verify(v => v.PrintTextEvent(It.IsAny<string>()), Times.Exactly(2));
         }
 
+
         [TestMethod()]
-        public void GetTextEvent_FullTextOfTheEvent()
+        public void PrintEvents_IncorrectFormatEvent_ThrowException()
         {
-            // Arrange
-            string @event = "Evento X, 10/05/2019 10:50:20";
-            string textEventExp = "Evento X ocurrirá dentro de 20 minutos";
-            _dateConverter.Setup(s => s.ConverterTextToDate(It.IsAny<string>())).Returns(It.IsAny<DateTime>());
-            _dateEventUtil.Setup(s => s.GetMessageEvent(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns(textEventExp);
+            //Arrange
+            _eventValidator.Setup(s => s.ValidateEventFormat(It.IsAny<string>())).Throws(new Exception("Error"));
 
             //Act
-            string textEventAct = _eventService.GetTextEvent(@event);
+            Exception exception = Assert.ThrowsException<Exception>(() => _eventService.PrintEvents(_path));
 
             //Assert
-            Assert.AreEqual(textEventExp, textEventAct);
-            _dateConverter.Verify(v => v.ConverterTextToDate(It.IsAny<string>()), Times.Once);
-            _dateEventUtil.Verify(v => v.GetMessageEvent(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
+            Assert.IsNotNull(exception.Message);
+            Assert.AreEqual("Error", exception.Message);
         }
     }
 }
