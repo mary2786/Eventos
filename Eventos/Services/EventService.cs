@@ -33,7 +33,7 @@ namespace Eventos.Services
             }
             catch (Exception excepcion)
             {
-                throw excepcion;
+                _printEvent.PrintTextEvent(excepcion.Message);
             }
         }
 

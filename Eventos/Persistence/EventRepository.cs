@@ -4,7 +4,7 @@ namespace Eventos.Persistence
 {
     public class EventRepository : IEventRepository
     {
-        private IFileWrapper _fileWrapper;
+        private readonly IFileWrapper _fileWrapper;
         public EventRepository(IFileWrapper fileWrapper)
         {
             _fileWrapper = fileWrapper;

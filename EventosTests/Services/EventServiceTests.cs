@@ -28,6 +28,7 @@ namespace Eventos.Services.Tests
             _path = @"c:\Temp\eventos.txt";
 
             _eventRepository.Setup(s => s.GetEvents(It.IsAny<string>())).Returns(_events);
+            _printEvent.Setup(s => s.PrintTextEvent(It.IsAny<string>()));
         }
 
         [TestMethod()]
@@ -40,8 +41,7 @@ namespace Eventos.Services.Tests
             string messageEventExp2 = "Navidad ocurrirá dentro de 10 meses";
             
             _eventValidator.SetupSequence(s => s.ValidateEventFormat(It.IsAny<string>())).Returns(@event1).Returns(event2);
-            _dateEventUtil.SetupSequence(s => s.GetMessageEvent(It.IsAny<Event>())).Returns(messageEventExp1).Returns(messageEventExp2);
-            _printEvent.Setup(s => s.PrintTextEvent(It.IsAny<string>()));
+            _dateEventUtil.SetupSequence(s => s.GetMessageEvent(It.IsAny<Event>())).Returns(messageEventExp1).Returns(messageEventExp2);    
 
             //Act
             _eventService.PrintEvents(_path);
@@ -55,17 +55,16 @@ namespace Eventos.Services.Tests
 
 
         [TestMethod()]
-        public void PrintEvents_IncorrectFormatEvent_ThrowException()
+        public void PrintEvents_IncorrectFormatEvent_PrintException()
         {
             //Arrange
             _eventValidator.Setup(s => s.ValidateEventFormat(It.IsAny<string>())).Throws(new Exception("Error"));
 
             //Act
-            Exception exception = Assert.ThrowsException<Exception>(() => _eventService.PrintEvents(_path));
+            _eventService.PrintEvents(_path);
 
             //Assert
-            Assert.IsNotNull(exception.Message);
-            Assert.AreEqual("Error", exception.Message);
+            _printEvent.Verify(v => v.PrintTextEvent(It.IsAny<string>()), Times.Once);
         }
     }
 }

@@ -8,19 +8,8 @@ namespace Eventos
     {
         static void Main(string[] args)
         {
-            var serviceProvider = new ServiceCollection()
-           .AddSingleton<IEventRepository, EventRepository>()
-           .AddSingleton<IFileWrapper, FileWrapper>()
-           .AddSingleton<IPrintEvent, PrintEvent>()
-           .AddSingleton<IEventValidator, EventValidator>()
-           .AddScoped<ICurrentDate, CurrentDate>()
-           .AddScoped<IDateConverter, DateConverter>()
-           .AddScoped<ITimeInterval, TimeInterval>()
-           .AddScoped<IDateEventUtil, DateEventUtil>()
-           .AddScoped<IEventService, EventService>()
-           .BuildServiceProvider();
-
-            IEventService eventService = serviceProvider.GetService<IEventService>();
+            DependencyContainer container = new DependencyContainer();
+            IEventService eventService = container.GetServiceProvider().GetService<IEventService>();
             string path = @"c:\Temp\eventos.txt";
             eventService.PrintEvents(path);          
         }
